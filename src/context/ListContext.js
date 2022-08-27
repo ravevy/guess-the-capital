@@ -4,6 +4,7 @@ import axios from "axios";
 const ListContext = createContext();
 
 export const ListProvider = ({children}) => {
+  const [start, setStart] = useState(false)
   const [data, setData] = useState()
   const [loading, setLoading] = useState(true)
   const [countryList, setCountryList] = useState()
@@ -18,35 +19,37 @@ export const ListProvider = ({children}) => {
   }, [])
 
   useEffect(()=>{
-    if(data){
-    const countries = data.filter((data)=>{return data.name.length < 23})
-    const countryList = []
-    const capitalList = data.map((data)=>{return data.capital})
-  
-    for(let i = 0; countryList.length < 10; i++){
-      let newItem = countries[Math.floor(Math.random()*countries.length)]
-      if(!countryList.includes(newItem)){
-        countryList.push({name: newItem.name, capitals: [newItem.capital], correct: newItem.capital})
+    if(!start){
+      if(data){
+        const countries = data.filter((data)=>{return data.name.length < 23})
+        const countryList = []
+        const capitalList = data.map((data)=>{return data.capital})
+      
+        for(let i = 0; countryList.length < 10; i++){
+          let newItem = countries[Math.floor(Math.random()*countries.length)]
+          if(!countryList.includes(newItem)){
+            countryList.push({name: newItem.name, capitals: [newItem.capital], correct: newItem.capital})
+          }
+        }
+      
+        countryList.forEach((data)=>{
+          for(let i = 0; i < 3; i++){
+            let spareCapital = capitalList[Math.floor(Math.random()*capitalList.length)]
+            if(!data.capitals.includes(spareCapital)){
+              data.capitals.push(spareCapital)
+            }
+            else{
+              i--
+            }
+          }
+          data.capitals.sort(() => Math.random() - 0.5)
+        })
+        setCountryList(countryList)
       }
     }
-  
-    countryList.forEach((data)=>{
-      for(let i = 0; i < 3; i++){
-        let spareCapital = capitalList[Math.floor(Math.random()*capitalList.length)]
-        if(!data.capitals.includes(spareCapital)){
-          data.capitals.push(spareCapital)
-        }
-        else{
-          i--
-        }
-      }
-      data.capitals.sort(() => Math.random() - 0.5)
-    })
+  }, [data, start])
 
-    setCountryList(countryList)}
-  }, [data])
-
-  const values = {data, setData, loading, setLoading, countryList}
+  const values = {data, setData, loading, setLoading, countryList, start, setStart}
  
   return <ListContext.Provider value={values}>{children}</ListContext.Provider>
 }

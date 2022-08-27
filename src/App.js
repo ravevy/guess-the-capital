@@ -4,10 +4,7 @@ import { useList } from "./context/ListContext";
 import Game from "./components/Game";
 
 function App(){
-  const [start, setStart] = useState(false)
-  const { loading } = useList()
-  
-
+  const { loading, start, setStart} = useList()
   
   return (
     <div className="">
