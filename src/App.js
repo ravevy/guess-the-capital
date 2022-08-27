@@ -1,4 +1,3 @@
-import {useState } from "react";
 import { useList } from "./context/ListContext";
 
 import Game from "./components/Game";
